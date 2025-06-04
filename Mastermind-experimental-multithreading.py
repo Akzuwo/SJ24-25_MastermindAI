@@ -216,6 +216,9 @@ def simuliere_chunk(spieler_klasse, runs):
 
 # --- Parallele Auswertung mit Prozessen + Fortschrittsbalken ---
 def eval_parallel(spieler_klasse, total_runs, workers, name):
+    if total_runs <= 0:
+        return 0
+
     base = total_runs // workers
     rest = total_runs % workers
     arbeitsaufteilung = [base + (1 if i < rest else 0) for i in range(workers)]
@@ -227,7 +230,7 @@ def eval_parallel(spieler_klasse, total_runs, workers, name):
                 chunk = fut.result()
                 alle.extend(chunk)
                 pbar.update(len(chunk))
-    return mean(alle)
+    return mean(alle) if alle else 0
 
 # --- Plot-Funktion ---
 def evaluations_plot(namen, werte, durchläufe):
